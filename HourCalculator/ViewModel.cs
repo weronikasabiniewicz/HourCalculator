@@ -14,20 +14,21 @@ namespace HourCalculator
 {
     public class ViewModel : INotifyPropertyChanged
     {
-        private TimeSpan EightHours = new TimeSpan(0, 0, 3);
+        private TimeSpan EightHours = new TimeSpan(0, 1, 0);
         public NotifyIconHandler NotifIcon { get; set; }
-        private string _timeValue;
-        public string TimeValue
+       
+        private string _nowTimeValue;
+        public string NowTimeValue
         {
-            get { return _timeValue; }
+            get { return _nowTimeValue; }
             private set
             {
-                _timeValue = value;
+                _nowTimeValue = value;
                 NotifyPropertyChanged();
             }
         }
 
-        public string DateValue
+        public string NowDateValue
         {
             get { return DateTime.Now.ToShortDateString(); }
         }
@@ -44,8 +45,16 @@ namespace HourCalculator
                 _startTime = value;
                 NotifyPropertyChanged();
                 NotifyPropertyChanged("IsStartPropertyVisible");
+                NotifyPropertyChanged("EndTime");
+
             }
         }
+
+        public DateTime? EndTime
+        {
+            get { return StartTime.HasValue ? StartTime.Value.Add(EightHours) : (DateTime?)null; }
+        }
+
         private TimeSpan? _spendTime;
         public TimeSpan? SpendTime
         {
@@ -110,7 +119,7 @@ namespace HourCalculator
 
         void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            TimeValue = DateTime.Now.ToLongTimeString();
+            NowTimeValue = DateTime.Now.ToLongTimeString();
             SpendTime = DateTime.Now - StartTime;
         }
 
