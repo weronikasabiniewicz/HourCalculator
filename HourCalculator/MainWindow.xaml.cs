@@ -22,47 +22,10 @@ namespace HourCalculator
         public MainWindow()
         {
             InitializeComponent();
-            var vm = new ViewModel();
+            ViewModel vm = new ViewModel();
             DataContext = vm;
-            
-            System.Windows.Forms.NotifyIcon ni = new System.Windows.Forms.NotifyIcon();
-            ni.Icon =  Properties.Resources.if_time_173116;
-            ni.Visible = true;
-            var contextMenu = new System.Windows.Forms.ContextMenu();
-            var menuItem = new System.Windows.Forms.MenuItem("Start");
-            menuItem.Click += (sender, eventArgs) =>
-            {
-                vm.Start();
-                this.Hide();
-            };
-            contextMenu.MenuItems.Add(menuItem);
-            ni.ContextMenu = contextMenu;
-            ni.BalloonTipTitle = "Spend time";
-          
-            ni.MouseDown += (sender, eventArgs) =>
-            {
-                ni.BalloonTipText = vm.SpendTime.HasValue ? vm.SpendTime.Value.ToString(@"hh\:mm") : "Please press start";
-                ni.ShowBalloonTip(1000);
-
-            };
-
-            ni.Click +=
-                delegate(object sender, EventArgs args)
-                {
-                    if (this.WindowState == WindowState.Minimized)
-                    {
-                        this.Show();
-                        this.WindowState = WindowState.Normal;
-                    }
-                    else
-                    {
-                        this.Hide();
-                        this.WindowState = WindowState.Minimized;
-                    }
-
-                };
+            var notifyIcon = new NotifyIconHandler(vm, this);
         }
-
 
         protected override void OnStateChanged(EventArgs e)
         {

@@ -14,6 +14,8 @@ namespace HourCalculator
 {
     public class ViewModel : INotifyPropertyChanged
     {
+        private TimeSpan EightHours = new TimeSpan(0, 0, 3);
+        public NotifyIconHandler NotifIcon { get; set; }
         private string _timeValue;
         public string TimeValue
         {
@@ -59,9 +61,24 @@ namespace HourCalculator
             }
         }
 
+        public TimeSpan? OverTime
+        {
+            get
+            {
+                return IsOverTime ? SpendTime.Value.Add(-EightHours) : (TimeSpan?)null;
+            }
+        }
+
+
+
+        public bool IsOverTime
+        {
+            get { return this.SpendTime > EightHours; }
+        }
+
         public Brush SpendHoursColour
         {
-            get { return SpendTime > new TimeSpan(8, 0, 0) ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Green); }
+            get { return IsOverTime ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Green); }
         }
 
         public Visibility IsStartPropertyVisible
@@ -81,13 +98,12 @@ namespace HourCalculator
                 }
                 return _startCommand;
             }
-
         }
-        
+
 
         public ViewModel()
         {
-            Timer _timer = new Timer(1000 );
+            Timer _timer = new Timer(1000);
             _timer.Start();
             _timer.Elapsed += _timer_Elapsed;
         }
@@ -97,7 +113,7 @@ namespace HourCalculator
             TimeValue = DateTime.Now.ToLongTimeString();
             SpendTime = DateTime.Now - StartTime;
         }
-       
+
 
         public void Start()
         {
