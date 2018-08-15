@@ -14,23 +14,18 @@ namespace HourCalculator
 {
     public class ViewModel : INotifyPropertyChanged
     {
-        private TimeSpan EightHours = new TimeSpan(0, 1, 0);
+        private TimeSpan EightHours = new TimeSpan(8, 0, 0);
         public NotifyIconHandler NotifIcon { get; set; }
        
-        private string _nowTimeValue;
-        public string NowTimeValue
+        private DateTime _nowDateTime;
+        public DateTime NowDateTime
         {
-            get { return _nowTimeValue; }
-            private set
+            get { return _nowDateTime; }
+            set
             {
-                _nowTimeValue = value;
+                _nowDateTime = value;
                 NotifyPropertyChanged();
             }
-        }
-
-        public string NowDateValue
-        {
-            get { return DateTime.Now.ToShortDateString(); }
         }
 
         private DateTime? _startTime;
@@ -40,7 +35,7 @@ namespace HourCalculator
             {
                 return _startTime;
             }
-            private set
+            set
             {
                 _startTime = value;
                 NotifyPropertyChanged();
@@ -67,6 +62,8 @@ namespace HourCalculator
                 _spendTime = value;
                 NotifyPropertyChanged();
                 NotifyPropertyChanged("SpendHoursColour");
+                NotifyPropertyChanged("IsOverTime");
+                NotifyPropertyChanged("OverTime");
             }
         }
 
@@ -74,10 +71,9 @@ namespace HourCalculator
         {
             get
             {
-                return IsOverTime ? SpendTime.Value.Add(-EightHours) : (TimeSpan?)null;
+                return IsOverTime ? SpendTime.Value.Subtract(EightHours) : (TimeSpan?)null;
             }
         }
-
 
 
         public bool IsOverTime
@@ -119,14 +115,15 @@ namespace HourCalculator
 
         void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            NowTimeValue = DateTime.Now.ToLongTimeString();
+            NowDateTime = DateTime.Now;
             SpendTime = DateTime.Now - StartTime;
         }
 
 
         public void Start()
         {
-            StartTime = DateTime.Now;
+            StartTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
+            DateTime.Now.Hour, DateTime.Now.Minute, 0);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
