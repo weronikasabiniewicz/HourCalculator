@@ -80,7 +80,7 @@ namespace HourCalculator
         {
             var menuItem = new System.Windows.Forms.MenuItem(menuItemText);
             menuItem.Click += (sender, eventArgs) => { onClick(); };
-
+           
             return menuItem;
         }
 

@@ -12,25 +12,42 @@ using System.Windows.Media;
 
 namespace HourCalculator
 {
-    public class ViewModel : INotifyPropertyChanged
+    public class ViewModel : ViewModelBase
     {
         private TimeSpan EightHours = new TimeSpan(0, 1, 0);
         private NotifyIconHandler notifIcon;
+        private States _state;
+        [DependentProperties("IsStartPropertyVisible", "IsStartButtonVisible", "IsOverTimeVisible", "IsPauseVisible")]
+        public States State
+        {
+            get { return _state; }
+            set
+            {
+                _state = value;
+                RaiseProperty();
+            }
+        }
 
         public ViewModel(NotifyIconHandler notifyIconHandler)
         {
+            State = States.NotStarted;
             notifIcon = notifyIconHandler;
+            ConfigureTimer();
+            ConfigureNofifyIcon();
+
+        }
+
+        private void ConfigureTimer()
+        {
             Timer _timer = new Timer(1000);
             _timer.Elapsed += _timer_Elapsed;
             _timer.Start();
-           
-            ConfigureNofifyIcon();
         }
 
         private void ConfigureNofifyIcon()
         {
             notifIcon.OnStartClicked = () => Start();
-            notifIcon.OnNotifyIconClicked = PrepareSpendTimeMessage; 
+            notifIcon.OnNotifyIconClicked = PrepareSpendTimeMessage;
 
         }
         private string PrepareSpendTimeMessage()
@@ -51,7 +68,7 @@ namespace HourCalculator
             }
             return ballonTipText.ToString();
         }
-       
+
         private DateTime _nowDateTime;
         public DateTime NowDateTime
         {
@@ -59,11 +76,12 @@ namespace HourCalculator
             set
             {
                 _nowDateTime = value;
-                NotifyPropertyChanged();
+                RaiseProperty();
             }
         }
 
         private DateTime? _startTime;
+        [DependentProperties("EndTime")]
         public DateTime? StartTime
         {
             get
@@ -73,9 +91,7 @@ namespace HourCalculator
             set
             {
                 _startTime = value;
-                NotifyPropertyChanged();
-                NotifyPropertyChanged("IsStartPropertyVisible");
-                NotifyPropertyChanged("EndTime");
+                RaiseProperty();
 
             }
         }
@@ -86,6 +102,7 @@ namespace HourCalculator
         }
 
         private TimeSpan? _spendTime;
+        [DependentProperties("SpendHoursColour", "IsOverTime", "OverTime", "IsOverTimeVisible")]
         public TimeSpan? SpendTime
         {
             get
@@ -95,10 +112,7 @@ namespace HourCalculator
             set
             {
                 _spendTime = value;
-                NotifyPropertyChanged();
-                NotifyPropertyChanged("SpendHoursColour");
-                NotifyPropertyChanged("IsOverTime");
-                NotifyPropertyChanged("OverTime");
+                RaiseProperty();
             }
         }
 
@@ -121,9 +135,23 @@ namespace HourCalculator
             get { return IsOverTime ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Green); }
         }
 
-        public Visibility IsStartPropertyVisible
+        public bool IsStartPropertyVisible
         {
-            get { return StartTime.HasValue ? Visibility.Visible : Visibility.Hidden; }
+            get { return State != States.NotStarted; }
+        }
+        public bool IsOverTimeVisible
+        {
+            get { return IsStartPropertyVisible && IsOverTime; }
+        }
+
+        public bool IsStartButtonVisible
+        {
+            get { return State != States.Started; }
+        }
+
+        public bool IsPauseVisible
+        {
+            get { return State == States.Started; }
         }
 
         private ICommand _startCommand;
@@ -139,29 +167,60 @@ namespace HourCalculator
                 return _startCommand;
             }
         }
-     
+
+        private ICommand _pauseCommand;
+
+        public ICommand PauseCommand
+        {
+            get
+            {
+                if (_pauseCommand == null)
+                {
+                    _pauseCommand = new Command(param => this.Pause());
+                }
+                return _pauseCommand;
+            }
+        }
+
+        private ICommand _stopCommand;
+
+        public ICommand StopCommand
+        {
+            get
+            {
+                if (_stopCommand == null)
+                {
+                    _stopCommand = new Command(param => this.Stop());
+                }
+                return _stopCommand;
+            }
+        }
+
 
         void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             NowDateTime = DateTime.Now;
             SpendTime = DateTime.Now - StartTime;
-          
         }
 
 
-        public void Start()
+        private void Start()
         {
+            State = States.Started;
             StartTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
             DateTime.Now.Hour, DateTime.Now.Minute, 0);
+
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        private void Pause()
         {
-            var handler = PropertyChanged;
-            if (handler != null)
-                handler(this, new PropertyChangedEventArgs(propertyName));
+            State = States.Paused;
+        }
+
+        private void Stop()
+        {
+            State = States.NotStarted;
         }
     }
 }
+
