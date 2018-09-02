@@ -9,7 +9,7 @@ namespace HourCalculator
 {
     public class ScheduleService
     {
-        private TimeSpan EightHours = new TimeSpan(0, 1, 0);
+        private TimeSpan EightHours = new TimeSpan(8, 0, 0);
         public ScheduleService()
         {
 

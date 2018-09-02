@@ -15,7 +15,6 @@ namespace HourCalculator
 {
     public class ViewModel : ViewModelBase
     {
-        private TimeSpan EightHours = new TimeSpan(0, 1, 0);
         private NotifyIconHandler _notifIcon;
         private ScheduleService _scheduleService;
         private DayScheduleModel _model;
@@ -44,7 +43,7 @@ namespace HourCalculator
 
         private void ConfigureTimer()
         {
-            Timer _timer = new Timer(1000 * 30);
+            Timer _timer = new Timer(1000);
             _timer.Elapsed += _timer_Elapsed;
             _timer.Start();
         }
