@@ -14,8 +14,42 @@ namespace HourCalculator
 {
     public class ViewModel : INotifyPropertyChanged
     {
-        private TimeSpan EightHours = new TimeSpan(8, 0, 0);
-        public NotifyIconHandler NotifIcon { get; set; }
+        private TimeSpan EightHours = new TimeSpan(0, 0, 30);
+        private NotifyIconHandler notifIcon;
+
+        public ViewModel(NotifyIconHandler notifyIconHandler)
+        {
+            notifIcon = notifyIconHandler;
+            Timer _timer = new Timer(1000);
+            _timer.Start();
+            _timer.Elapsed += _timer_Elapsed;
+            ConfigureNofifyIcon();
+        }
+
+        private void ConfigureNofifyIcon()
+        {
+            notifIcon.OnStartClicked = () => Start();
+            notifIcon.OnNotifyIconClicked = PrepareSpendTimeMessage; 
+
+        }
+        private string PrepareSpendTimeMessage()
+        {
+            var ballonTipText = new StringBuilder("Please press start");
+
+            if (SpendTime.HasValue)
+            {
+                ballonTipText.Clear();
+                ballonTipText.Append(SpendTime.Value.Hours + "h " + SpendTime.Value.Minutes + "m");
+            }
+
+            if (IsOverTime)
+            {
+                ballonTipText.AppendLine();
+                ballonTipText.Append("Overtime: ");
+                ballonTipText.Append(OverTime.Value.Hours + "h " + OverTime.Value.Minutes + "m");
+            }
+            return ballonTipText.ToString();
+        }
        
         private DateTime _nowDateTime;
         public DateTime NowDateTime
@@ -106,17 +140,13 @@ namespace HourCalculator
         }
 
 
-        public ViewModel()
-        {
-            Timer _timer = new Timer(1000);
-            _timer.Start();
-            _timer.Elapsed += _timer_Elapsed;
-        }
+      
 
         void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             NowDateTime = DateTime.Now;
             SpendTime = DateTime.Now - StartTime;
+          
         }
 
 

@@ -22,9 +22,9 @@ namespace HourCalculator
         public MainWindow()
         {
             InitializeComponent();
-            ViewModel vm = new ViewModel();
-            DataContext = vm;
-            var notifyIcon = new NotifyIconHandler(vm, this);
+            var notifyIconService = new NotifyIconHandler(this);
+            DataContext = new ViewModel(notifyIconService);
+            
         }
 
         protected override void OnStateChanged(EventArgs e)

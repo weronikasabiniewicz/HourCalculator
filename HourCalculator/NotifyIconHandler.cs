@@ -9,18 +9,20 @@ namespace HourCalculator
     public class NotifyIconHandler
     {
         public System.Windows.Forms.NotifyIcon notifyIcon = new System.Windows.Forms.NotifyIcon();
-        private ViewModel _vm;
         private MainWindow _window;
 
-        public NotifyIconHandler(ViewModel viewModel, MainWindow window)
+        public NotifyIconHandler(MainWindow window)
         {
-            _vm = viewModel;
             _window = window;
-            _vm.NotifIcon = this;
             CreateNotifyIcon();
         }
 
-        public void CreateNotifyIcon()
+        public Action OnStartClicked { get; set; }
+        public Func<string> OnNotifyIconClicked { get; set; }
+
+        public Action<string, string> ShowNotification { get; set; }
+
+        private void CreateNotifyIcon()
         {
             notifyIcon.Icon = Properties.Resources.if_time_173116;
             notifyIcon.Visible = true;
@@ -28,42 +30,25 @@ namespace HourCalculator
             CreateContextMenu();
 
             ConfigureOnClickNotifyIcon();
+
+            ShowNotification += (title, message) => notifyIcon.ShowBalloonTip(500, title, message, System.Windows.Forms.ToolTipIcon.Info);
         }
 
         private void ConfigureOnClickNotifyIcon()
         {
             notifyIcon.Click += (sender, eventArgs) =>
             {
-                notifyIcon.BalloonTipTitle = "Spent time";
-
                 if (((System.Windows.Forms.MouseEventArgs)eventArgs).Button == System.Windows.Forms.MouseButtons.Right)
                 {
                     return;
                 }
+                var message = OnNotifyIconClicked();
 
-                notifyIcon.BalloonTipText = PrepareBallonTextMessage();
+                notifyIcon.BalloonTipTitle = "Spent time";
+                notifyIcon.BalloonTipText = message;
                 notifyIcon.ShowBalloonTip(500);
 
             };
-        }
-
-        private string PrepareBallonTextMessage()
-        {
-            var ballonTipText = new StringBuilder("Please press start"); 
-                
-                if (_vm.SpendTime.HasValue)
-                {
-                    ballonTipText.Clear();
-                    ballonTipText.Append(_vm.SpendTime.Value.Hours + "h " + _vm.SpendTime.Value.Minutes + "m");
-                }
-                
-                if (_vm.IsOverTime)
-                {
-                    ballonTipText.AppendLine();
-                    ballonTipText.Append("Overtime: ");
-                    ballonTipText.Append(_vm.OverTime.Value.Hours + "h " + _vm.OverTime.Value.Minutes + "m");
-                }
-            return ballonTipText.ToString();
         }
 
         private void CreateContextMenu()
@@ -79,7 +64,10 @@ namespace HourCalculator
 
             var startMenuItem = CreateMenuItem("Start", () =>
             {
-                _vm.Start();
+                if(OnStartClicked != null)
+                {
+                    OnStartClicked();
+                };
                 _window.Hide();
             });
             contextMenu.MenuItems.Add(startMenuItem);
