@@ -21,8 +21,9 @@ namespace HourCalculator
         {
             notifIcon = notifyIconHandler;
             Timer _timer = new Timer(1000);
-            _timer.Start();
             _timer.Elapsed += _timer_Elapsed;
+            _timer.Start();
+           
             ConfigureNofifyIcon();
         }
 
@@ -138,9 +139,7 @@ namespace HourCalculator
                 return _startCommand;
             }
         }
-
-
-      
+     
 
         void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {

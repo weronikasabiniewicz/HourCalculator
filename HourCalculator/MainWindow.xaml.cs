@@ -35,6 +35,15 @@ namespace HourCalculator
             base.OnStateChanged(e);
         }
 
+        private void TimeCalculator_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+           var result = MessageBox.Show(this, "Do you want close app? Data will be lost.", "Closing",MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+            if(result == MessageBoxResult.No)
+            {
+                e.Cancel = true;
+            }
+        }
+
                
     }
 }
