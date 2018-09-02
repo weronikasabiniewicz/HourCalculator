@@ -52,7 +52,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>if_time_173116.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>2E3073C573BB79492A94B2B1D81BBFF4EC3200BB</ManifestCertificateThumbprint>
@@ -110,8 +111,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Command.cs" />
+    <Compile Include="DayScheduleModel.cs" />
     <Compile Include="DependPropertiesAttributte.cs" />
     <Compile Include="NotifyIconHandler.cs" />
+    <Compile Include="ScheduleService.cs" />
     <Compile Include="States.cs" />
     <Compile Include="VievModelBase.cs" />
     <Compile Include="ViewModel.cs" />
@@ -161,9 +164,6 @@
     <None Include="Resources\if_time_173116.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="if_time_173116.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
@@ -184,6 +184,9 @@
     <Resource Include="Resources\pause.png" />
     <Resource Include="Resources\play.png" />
     <Resource Include="Resources\stop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="if_time_173116.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

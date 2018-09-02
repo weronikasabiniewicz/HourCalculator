@@ -23,7 +23,8 @@ namespace HourCalculator
         {
             InitializeComponent();
             var notifyIconService = new NotifyIconHandler(this);
-            DataContext = new ViewModel(notifyIconService);
+            var scheduleService = new ScheduleService();
+            DataContext = new ViewModel(notifyIconService, scheduleService);
             
         }
 

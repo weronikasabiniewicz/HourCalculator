@@ -15,7 +15,10 @@ namespace HourCalculator
     public class ViewModel : ViewModelBase
     {
         private TimeSpan EightHours = new TimeSpan(0, 1, 0);
-        private NotifyIconHandler notifIcon;
+        private NotifyIconHandler _notifIcon;
+        private ScheduleService _scheduleService;
+        private DayScheduleModel _model;
+        
         private States _state;
         [DependentProperties("IsStartPropertyVisible", "IsStartButtonVisible", "IsOverTimeVisible", "IsPauseVisible")]
         public States State
@@ -28,10 +31,11 @@ namespace HourCalculator
             }
         }
 
-        public ViewModel(NotifyIconHandler notifyIconHandler)
+        public ViewModel(NotifyIconHandler notifyIconHandler, ScheduleService scheduleService)
         {
             State = States.NotStarted;
-            notifIcon = notifyIconHandler;
+            _notifIcon = notifyIconHandler;
+            _scheduleService = scheduleService;
             ConfigureTimer();
             ConfigureNofifyIcon();
 
@@ -46,8 +50,8 @@ namespace HourCalculator
 
         private void ConfigureNofifyIcon()
         {
-            notifIcon.OnStartClicked = () => Start();
-            notifIcon.OnNotifyIconClicked = PrepareSpendTimeMessage;
+            _notifIcon.OnStartClicked = () => Start();
+            _notifIcon.OnNotifyIconClicked = PrepareSpendTimeMessage;
 
         }
         private string PrepareSpendTimeMessage()
@@ -80,35 +84,31 @@ namespace HourCalculator
             }
         }
 
-        private DateTime? _startTime;
         [DependentProperties("EndTime")]
         public DateTime? StartTime
         {
             get
             {
-                return _startTime;
+                return _model != null ? _model.StartTime : (DateTime?)null;
             }
             set
             {
-                _startTime = value;
+                _model.StartTime = value.Value;
+                _scheduleService.UpdateStartTime(_model);
                 RaiseProperty();
-
             }
         }
 
+        
         public DateTime? EndTime
         {
-            get { return StartTime.HasValue ? StartTime.Value.Add(EightHours) : (DateTime?)null; }
+            get { return _model != null ? _model.PredictStopTime : (DateTime?)null; }
         }
 
         private TimeSpan? _spendTime;
-        [DependentProperties("SpendHoursColour", "IsOverTime", "OverTime", "IsOverTimeVisible")]
         public TimeSpan? SpendTime
         {
-            get
-            {
-                return _spendTime;
-            }
+            get { return _spendTime; }
             set
             {
                 _spendTime = value;
@@ -116,18 +116,23 @@ namespace HourCalculator
             }
         }
 
+
+        private TimeSpan? _overTime;
+        [DependentProperties("IsOverTime", "SpendHoursColour", "IsOverTimeVisible")]
         public TimeSpan? OverTime
         {
-            get
+            get { return _overTime; }
+            set
             {
-                return IsOverTime ? SpendTime.Value.Subtract(EightHours) : (TimeSpan?)null;
+                _overTime = value;
+                RaiseProperty();
             }
         }
 
 
         public bool IsOverTime
         {
-            get { return this.SpendTime > EightHours; }
+            get { return OverTime.HasValue; }
         }
 
         public Brush SpendHoursColour
@@ -200,15 +205,24 @@ namespace HourCalculator
         void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             NowDateTime = DateTime.Now;
-            SpendTime = DateTime.Now - StartTime;
+            if( State != States.NotStarted)
+            {
+                _scheduleService.UpdateSpentTime(_model);
+                SpendTime = _model.SpentTime;
+                OverTime = _model.OverTime;
+            }
         }
 
 
         private void Start()
         {
+            if (State == States.NotStarted)
+            {
+                _model = _scheduleService.GetEmptyDaySchedule();
+                RaiseProperty("StartTime");
+            }
+            
             State = States.Started;
-            StartTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
-            DateTime.Now.Hour, DateTime.Now.Minute, 0);
 
         }
 
@@ -219,7 +233,9 @@ namespace HourCalculator
 
         private void Stop()
         {
+            _scheduleService.Stop(_model);
             State = States.NotStarted;
+
         }
     }
 }
