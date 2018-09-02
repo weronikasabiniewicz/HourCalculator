@@ -14,7 +14,7 @@ namespace HourCalculator
 {
     public class ViewModel : INotifyPropertyChanged
     {
-        private TimeSpan EightHours = new TimeSpan(0, 0, 30);
+        private TimeSpan EightHours = new TimeSpan(0, 1, 0);
         private NotifyIconHandler notifIcon;
 
         public ViewModel(NotifyIconHandler notifyIconHandler)
