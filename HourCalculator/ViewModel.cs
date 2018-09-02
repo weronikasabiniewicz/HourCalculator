@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HourCalculator.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -43,7 +44,7 @@ namespace HourCalculator
 
         private void ConfigureTimer()
         {
-            Timer _timer = new Timer(1000);
+            Timer _timer = new Timer(1000 * 30);
             _timer.Elapsed += _timer_Elapsed;
             _timer.Start();
         }
@@ -94,7 +95,7 @@ namespace HourCalculator
             set
             {
                 _model.StartTime = value.Value;
-                _scheduleService.UpdateStartTime(_model);
+                _scheduleService.UpdatePredictStopTime(_model);
                 RaiseProperty();
             }
         }
@@ -115,8 +116,7 @@ namespace HourCalculator
                 RaiseProperty();
             }
         }
-
-
+        
         private TimeSpan? _overTime;
         [DependentProperties("IsOverTime", "SpendHoursColour", "IsOverTimeVisible")]
         public TimeSpan? OverTime
@@ -216,10 +216,15 @@ namespace HourCalculator
 
         private void Start()
         {
-            if (State == States.NotStarted)
+            if (State == States.NotStarted || State == States.Stopped)
             {
                 _model = _scheduleService.GetEmptyDaySchedule();
                 RaiseProperty("StartTime");
+            }
+            else if (State == States.Paused)
+            {
+                _scheduleService.EndPause(_model);
+                RaiseProperty("EndTime");
             }
             
             State = States.Started;
@@ -228,13 +233,14 @@ namespace HourCalculator
 
         private void Pause()
         {
+            _scheduleService.AddPause(_model);
             State = States.Paused;
         }
 
         private void Stop()
         {
             _scheduleService.Stop(_model);
-            State = States.NotStarted;
+            State = States.Stopped;
 
         }
     }

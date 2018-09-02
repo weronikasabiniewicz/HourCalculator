@@ -111,8 +111,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Command.cs" />
-    <Compile Include="DayScheduleModel.cs" />
+    <Compile Include="Models\DayScheduleModel.cs" />
     <Compile Include="DependPropertiesAttributte.cs" />
+    <Compile Include="Models\PauseModel.cs" />
     <Compile Include="NotifyIconHandler.cs" />
     <Compile Include="ScheduleService.cs" />
     <Compile Include="States.cs" />

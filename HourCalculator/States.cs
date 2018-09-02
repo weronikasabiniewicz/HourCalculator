@@ -10,6 +10,7 @@ namespace HourCalculator
     {
         NotStarted,
         Started,
-        Paused
+        Paused,
+        Stopped
     }
 }
