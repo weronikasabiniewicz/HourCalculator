@@ -58,17 +58,24 @@ namespace HourCalculator
         {
             var ballonTipText = new StringBuilder("Please press start");
 
-            if (SpendTime.HasValue)
-            {
+            if (State == States.Started || State == States.Paused)
+            {                
                 ballonTipText.Clear();
-                ballonTipText.Append(SpendTime.Value.Hours + "h " + SpendTime.Value.Minutes + "m");
-            }
+                if(State == States.Paused)
+                {
+                    ballonTipText.AppendLine("Application paused");
+                }
+                if (SpendTime.HasValue)
+                {
+                    ballonTipText.AppendLine(SpendTime.Value.Hours + "h " + SpendTime.Value.Minutes + "m");
+                }
 
-            if (IsOverTime)
-            {
-                ballonTipText.AppendLine();
-                ballonTipText.Append("Overtime: ");
-                ballonTipText.Append(OverTime.Value.Hours + "h " + OverTime.Value.Minutes + "m");
+                if (IsOverTime)
+                {
+                    ballonTipText.AppendLine();
+                    ballonTipText.Append("Overtime: ");
+                    ballonTipText.Append(OverTime.Value.Hours + "h " + OverTime.Value.Minutes + "m");
+                }
             }
             return ballonTipText.ToString();
         }
