@@ -17,7 +17,7 @@ namespace HourCalculator
         public DayScheduleModel GetEmptyDaySchedule()
         {
             var model = new DayScheduleModel();
-            model.StartTime = CutMilisecounds(DateTime.Now);
+            model.StartTime = DateTime.Now.CutSecound();
             model.PredictStopTime = model.StartTime.Add(EightHours);
             model.Pauses = new List<PauseModel>();
             return model;
@@ -25,7 +25,7 @@ namespace HourCalculator
 
         public void Stop (DayScheduleModel model)
         {
-            model.StopTime = CutMilisecounds(DateTime.Now);
+            model.StopTime = DateTime.Now.CutSecound();
         }
 
         public void UpdatePredictStopTime(DayScheduleModel model)
@@ -35,18 +35,16 @@ namespace HourCalculator
 
         public void UpdateSpentTime(DayScheduleModel model)
         {
-            model.SpentTime = (CutMilisecounds(DateTime.Now) - model.StartTime) - SumPausesTime(model.Pauses);
-            if (model.SpentTime > EightHours)
-            {
-                model.OverTime = model.SpentTime - EightHours;
-            }
+            model.SpentTime = (DateTime.Now.CutSecound() - model.StartTime) - SumPausesTime(model.Pauses);
+            model.OverTime = model.SpentTime > EightHours ? model.SpentTime - EightHours : (TimeSpan?)null;
+          
         }
 
         public void AddPause (DayScheduleModel model, string comment = null)
         {
             var pause = new PauseModel
             {
-                StartTime = CutMilisecounds(DateTime.Now),
+                StartTime = DateTime.Now.CutSecound(),
                 Comment = comment
             };
             model.Pauses.Add(pause);
@@ -54,7 +52,7 @@ namespace HourCalculator
         public void EndPause(DayScheduleModel model)
         {
             var pause = model.Pauses.FirstOrDefault(p => !p.StopTime.HasValue);
-            pause.StopTime = CutMilisecounds(DateTime.Now);
+            pause.StopTime = DateTime.Now.CutSecound();
             UpdatePredictStopTime(model);
         }
 
@@ -63,18 +61,13 @@ namespace HourCalculator
             var pauseTime = new TimeSpan();
             foreach (var pause in pauses)
             {
-                var diff = (pause.StopTime ?? CutMilisecounds(DateTime.Now)) - pause.StartTime;
+                var diff = (pause.StopTime ?? DateTime.Now.CutSecound()) - pause.StartTime;
                pauseTime = pauseTime.Add(diff);
             }
 
             return pauseTime;
         }
-        //TODO: Make extension
-        private DateTime CutMilisecounds(DateTime dateTime)
-        {
-            return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day,
-            dateTime.Hour, dateTime.Minute, 0); ;
-        }
+      
     
     }
 }

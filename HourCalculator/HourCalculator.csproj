@@ -26,7 +26,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>6</ApplicationRevision>
+    <ApplicationRevision>7</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -110,13 +110,14 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Command.cs" />
+    <Compile Include="DateTime.Extension.cs" />
     <Compile Include="Models\DayScheduleModel.cs" />
     <Compile Include="DependPropertiesAttributte.cs" />
     <Compile Include="Models\PauseModel.cs" />
     <Compile Include="NotifyIconHandler.cs" />
     <Compile Include="ScheduleService.cs" />
     <Compile Include="States.cs" />
-    <Compile Include="ViewModels\VievModelBase.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
