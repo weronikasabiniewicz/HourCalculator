@@ -98,6 +98,7 @@ namespace HourCalculator
             {
                 return _model != null ? _model.StartTime : (DateTime?)null;
             }
+
             set
             {
                 _model.StartTime = value.Value;
