@@ -9,34 +9,30 @@ namespace HourCalculator
 {
     public class ScheduleService
     {
-        private TimeSpan EightHours = new TimeSpan(8, 0, 0);
-        public ScheduleService()
-        {
+        private readonly TimeSpan _eightHours = new TimeSpan(8, 0, 0);
 
-        }
         public DayScheduleModel GetEmptyDaySchedule()
         {
-            var model = new DayScheduleModel();
-            model.StartTime = DateTime.Now.CutSecound();
-            model.PredictStopTime = model.StartTime.Add(EightHours);
+            var model = new DayScheduleModel {StartTime = DateTime.Now.CutSecond()};
+            model.PredictStopTime = model.StartTime.Add(_eightHours);
             model.Pauses = new List<PauseModel>();
             return model;
         }
 
         public void Stop (DayScheduleModel model)
         {
-            model.StopTime = DateTime.Now.CutSecound();
+            model.StopTime = DateTime.Now.CutSecond();
         }
 
         public void UpdatePredictStopTime(DayScheduleModel model)
         {
-            model.PredictStopTime = model.StartTime.Add(EightHours) + SumPausesTime(model.Pauses);
+            model.PredictStopTime = model.StartTime.Add(_eightHours) + SumPausesTime(model.Pauses);
         }
 
         public void UpdateSpentTime(DayScheduleModel model)
         {
-            model.SpentTime = (DateTime.Now.CutSecound() - model.StartTime) - SumPausesTime(model.Pauses);
-            model.OverTime = model.SpentTime > EightHours ? model.SpentTime - EightHours : (TimeSpan?)null;
+            model.SpentTime = (DateTime.Now.CutSecond() - model.StartTime) - SumPausesTime(model.Pauses);
+            model.OverTime = model.SpentTime > _eightHours ? model.SpentTime - _eightHours : (TimeSpan?)null;
           
         }
 
@@ -44,7 +40,7 @@ namespace HourCalculator
         {
             var pause = new PauseModel
             {
-                StartTime = DateTime.Now.CutSecound(),
+                StartTime = DateTime.Now.CutSecond(),
                 Comment = comment
             };
             model.Pauses.Add(pause);
@@ -52,7 +48,7 @@ namespace HourCalculator
         public void EndPause(DayScheduleModel model)
         {
             var pause = model.Pauses.FirstOrDefault(p => !p.StopTime.HasValue);
-            pause.StopTime = DateTime.Now.CutSecound();
+            if (pause != null) pause.StopTime = DateTime.Now.CutSecond();
             UpdatePredictStopTime(model);
         }
 
@@ -61,7 +57,7 @@ namespace HourCalculator
             var pauseTime = new TimeSpan();
             foreach (var pause in pauses)
             {
-                var diff = (pause.StopTime ?? DateTime.Now.CutSecound()) - pause.StartTime;
+                var diff = (pause.StopTime ?? DateTime.Now.CutSecond()) - pause.StartTime;
                pauseTime = pauseTime.Add(diff);
             }
 

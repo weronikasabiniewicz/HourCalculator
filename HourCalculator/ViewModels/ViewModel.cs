@@ -10,20 +10,21 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using HourCalculator.ViewModels;
 
 namespace HourCalculator
 {
     public class ViewModel : ViewModelBase
     {
-        private NotifyIconHandler _notifIcon;
-        private ScheduleService _scheduleService;
+        private readonly NotifyIconHandler _notifIcon;
+        private readonly ScheduleService _scheduleService;
         private DayScheduleModel _model;
         
         private States _state;
         [DependentProperties("IsStartPropertyVisible", "IsStartButtonVisible", "IsOverTimeVisible", "IsPauseVisible")]
         public States State
         {
-            get { return _state; }
+            get => _state;
             set
             {
                 _state = value;
@@ -37,53 +38,53 @@ namespace HourCalculator
             _notifIcon = notifyIconHandler;
             _scheduleService = scheduleService;
             ConfigureTimer();
-            ConfigureNofifyIcon();
+            ConfigureNotifyIcon();
 
         }
 
         private void ConfigureTimer()
         {
-            Timer _timer = new Timer(1000);
-            _timer.Elapsed += _timer_Elapsed;
-            _timer.Start();
+            Timer timer = new Timer(1000);
+            timer.Elapsed += TimerElapsed;
+            timer.Start();
         }
 
-        private void ConfigureNofifyIcon()
+        private void ConfigureNotifyIcon()
         {
-            _notifIcon.OnStartClicked = () => Start();
+            _notifIcon.OnStartClicked = Start;
             _notifIcon.OnNotifyIconClicked = PrepareSpendTimeMessage;
 
         }
         private string PrepareSpendTimeMessage()
         {
-            var ballonTipText = new StringBuilder("Please press start");
+            var balloonTipText = new StringBuilder("Please press start");
 
             if (State == States.Started || State == States.Paused)
             {                
-                ballonTipText.Clear();
+                balloonTipText.Clear();
                 if(State == States.Paused)
                 {
-                    ballonTipText.AppendLine("Application paused");
+                    balloonTipText.AppendLine("Application paused");
                 }
                 if (SpendTime.HasValue)
                 {
-                    ballonTipText.AppendLine(SpendTime.Value.Hours + "h " + SpendTime.Value.Minutes + "m");
+                    balloonTipText.AppendLine(SpendTime.Value.Hours + "h " + SpendTime.Value.Minutes + "m");
                 }
 
                 if (IsOverTime)
                 {
-                    ballonTipText.AppendLine();
-                    ballonTipText.Append("Overtime: ");
-                    ballonTipText.Append(OverTime.Value.Hours + "h " + OverTime.Value.Minutes + "m");
+                    balloonTipText.AppendLine();
+                    balloonTipText.Append("Overtime: ");
+                    balloonTipText.Append($"{OverTime.Value.Hours}h {OverTime.Value.Minutes}m");
                 }
             }
-            return ballonTipText.ToString();
+            return balloonTipText.ToString();
         }
 
         private DateTime _nowDateTime;
         public DateTime NowDateTime
         {
-            get { return _nowDateTime; }
+            get => _nowDateTime;
             set
             {
                 _nowDateTime = value;
@@ -94,10 +95,7 @@ namespace HourCalculator
         [DependentProperties("EndTime")]
         public DateTime? StartTime
         {
-            get
-            {
-                return _model != null ? _model.StartTime : (DateTime?)null;
-            }
+            get => _model?.StartTime;
 
             set
             {
@@ -108,15 +106,12 @@ namespace HourCalculator
         }
 
         
-        public DateTime? EndTime
-        {
-            get { return _model != null ? _model.PredictStopTime : (DateTime?)null; }
-        }
+        public DateTime? EndTime => _model?.PredictStopTime;
 
         private TimeSpan? _spendTime;
         public TimeSpan? SpendTime
         {
-            get { return _spendTime; }
+            get => _spendTime;
             set
             {
                 _spendTime = value;
@@ -125,10 +120,10 @@ namespace HourCalculator
         }
         
         private TimeSpan? _overTime;
-        [DependentProperties("IsOverTime", "SpendHoursColour", "IsOverTimeVisible")]
+        [DependentProperties("IsOverTime", "SpendHoursColor", "IsOverTimeVisible")]
         public TimeSpan? OverTime
         {
-            get { return _overTime; }
+            get => _overTime;
             set
             {
                 _overTime = value;
@@ -137,87 +132,47 @@ namespace HourCalculator
         }
 
 
-        public bool IsOverTime
-        {
-            get { return OverTime.HasValue; }
-        }
+        public bool IsOverTime => OverTime.HasValue;
 
-        public Brush SpendHoursColour
-        {
-            get { return IsOverTime ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Green); }
-        }
+        public Brush SpendHoursColor => IsOverTime ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Green);
 
-        public bool IsStartPropertyVisible
-        {
-            get { return State != States.NotStarted; }
-        }
-        public bool IsOverTimeVisible
-        {
-            get { return IsStartPropertyVisible && IsOverTime; }
-        }
+        public bool IsStartPropertyVisible => State != States.NotStarted;
 
-        public bool IsStartButtonVisible
-        {
-            get { return State != States.Started; }
-        }
+        public bool IsOverTimeVisible => IsStartPropertyVisible && IsOverTime;
 
-        public bool IsPauseVisible
-        {
-            get { return State == States.Started; }
-        }
+        public bool IsStartButtonVisible => State != States.Started;
+
+        public bool IsPauseVisible => State == States.Started;
 
         private ICommand _startCommand;
 
         public ICommand StartCommand
         {
-            get
-            {
-                if (_startCommand == null)
-                {
-                    _startCommand = new Command(param => this.Start());
-                }
-                return _startCommand;
-            }
+            get { return _startCommand ?? (_startCommand = new Command(param => Start())); }
         }
 
         private ICommand _pauseCommand;
 
         public ICommand PauseCommand
         {
-            get
-            {
-                if (_pauseCommand == null)
-                {
-                    _pauseCommand = new Command(param => this.Pause());
-                }
-                return _pauseCommand;
-            }
+            get { return _pauseCommand ?? (_pauseCommand = new Command(param => Pause())); }
         }
 
         private ICommand _stopCommand;
 
         public ICommand StopCommand
         {
-            get
-            {
-                if (_stopCommand == null)
-                {
-                    _stopCommand = new Command(param => this.Stop());
-                }
-                return _stopCommand;
-            }
+            get { return _stopCommand ?? (_stopCommand = new Command(param => Stop())); }
         }
 
 
-        void _timer_Elapsed(object sender, ElapsedEventArgs e)
+        private void TimerElapsed(object sender, ElapsedEventArgs e)
         {
             NowDateTime = DateTime.Now;
-            if( State != States.NotStarted)
-            {
-                _scheduleService.UpdateSpentTime(_model);
-                SpendTime = _model.SpentTime;
-                OverTime = _model.OverTime;
-            }
+            if (State == States.NotStarted) return;
+            _scheduleService.UpdateSpentTime(_model);
+            SpendTime = _model.SpentTime;
+            OverTime = _model.OverTime;
         }
 
 
@@ -226,12 +181,12 @@ namespace HourCalculator
             if (State == States.NotStarted || State == States.Stopped)
             {
                 _model = _scheduleService.GetEmptyDaySchedule();
-                RaiseProperty("StartTime");
+                RaiseProperty(nameof(StartTime));
             }
             else if (State == States.Paused)
             {
                 _scheduleService.EndPause(_model);
-                RaiseProperty("EndTime");
+                RaiseProperty(nameof(EndTime));
             }
             
             State = States.Started;

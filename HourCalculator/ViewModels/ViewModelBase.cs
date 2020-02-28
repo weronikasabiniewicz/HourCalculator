@@ -1,56 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HourCalculator
+namespace HourCalculator.ViewModels
 {
-        public class ViewModelBase : INotifyPropertyChanged
+    public class ViewModelBase : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void RaiseProperty([CallerMemberName] string propertyName = null,
+            List<string> calledProperties = null)
         {
-            public event PropertyChangedEventHandler PropertyChanged;
+            RaisePropertyChanged(propertyName);
 
-            protected void RaiseProperty([CallerMemberName] string propertyName = null, List<string> calledProperties = null)
+            if (calledProperties == null) calledProperties = new List<string>();
+
+            calledProperties.Add(propertyName);
+
+            var pInfo = GetType().GetProperty(propertyName);
+
+            if (pInfo == null) return;
+            foreach (var ca in
+                pInfo.GetCustomAttributes(false).OfType<DependentPropertiesAttribute>())
             {
-                RaisePropertyChanged(propertyName);
-
-                if (calledProperties == null)
-                {
-                    calledProperties = new List<string>();
-                }
-
-                calledProperties.Add(propertyName);
-
-                PropertyInfo pInfo = GetType().GetProperty(propertyName);
-
-                if (pInfo != null)
-                {
-                    foreach (DependentPropertiesAttribute ca in
-                      pInfo.GetCustomAttributes(false).OfType<DependentPropertiesAttribute>())
-                    {
-                        if (ca.Properties != null)
-                        {
-                            foreach (string prop in ca.Properties)
-                            {
-                                if (prop != propertyName && !calledProperties.Contains(prop))
-                                {
-                                    RaiseProperty(prop, calledProperties);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            private void RaisePropertyChanged(string propertyName)
-            {
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-                }
+                if (ca.Properties == null) continue;
+                foreach (var prop in ca.Properties)
+                    if (prop != propertyName && !calledProperties.Contains(prop))
+                        RaiseProperty(prop, calledProperties);
             }
         }
+
+        private void RaisePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
 }

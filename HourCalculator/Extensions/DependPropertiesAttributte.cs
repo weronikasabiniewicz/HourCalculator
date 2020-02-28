@@ -6,22 +6,14 @@ using System.Threading.Tasks;
 
 namespace HourCalculator
 {
-    [AttributeUsage(System.AttributeTargets.Property)]
+    [AttributeUsage(AttributeTargets.Property)]
     public class DependentPropertiesAttribute : Attribute
     {
-        private readonly string[] properties;
-
         public DependentPropertiesAttribute(params string[] dp)
         {
-            properties = dp;
+            Properties = dp;
         }
 
-        public string[] Properties
-        {
-            get
-            {
-                return properties;
-            }
-        }
+        public string[] Properties { get; }
     }
 }

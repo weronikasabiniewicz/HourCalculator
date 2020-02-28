@@ -8,7 +8,7 @@ namespace HourCalculator
 {
     public static class DateTimeExtension
     {
-        public static DateTime CutSecound(this DateTime dateTime)
+        public static DateTime CutSecond(this DateTime dateTime)
         {
             return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day,
             dateTime.Hour, dateTime.Minute, 0);

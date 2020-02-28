@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HourCalculator")]
-[assembly: AssemblyCopyright("Copyright Werka ©  2018")]
+[assembly: AssemblyCopyright("Copyright Werka ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

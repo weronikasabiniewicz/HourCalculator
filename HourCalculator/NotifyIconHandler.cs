@@ -8,8 +8,8 @@ namespace HourCalculator
 {
     public class NotifyIconHandler
     {
-        public System.Windows.Forms.NotifyIcon notifyIcon = new System.Windows.Forms.NotifyIcon();
-        private MainWindow _window;
+        public System.Windows.Forms.NotifyIcon NotifyIcon = new System.Windows.Forms.NotifyIcon();
+        private readonly MainWindow _window;
 
         public NotifyIconHandler(MainWindow window)
         {
@@ -24,19 +24,19 @@ namespace HourCalculator
 
         private void CreateNotifyIcon()
         {
-            notifyIcon.Icon = Properties.Resources.if_time_173116;
-            notifyIcon.Visible = true;
+            NotifyIcon.Icon = Properties.Resources.if_time_173116;
+            NotifyIcon.Visible = true;
 
             CreateContextMenu();
 
             ConfigureOnClickNotifyIcon();
 
-            ShowNotification += (title, message) => notifyIcon.ShowBalloonTip(500, title, message, System.Windows.Forms.ToolTipIcon.Info);
+            ShowNotification += (title, message) => NotifyIcon.ShowBalloonTip(500, title, message, System.Windows.Forms.ToolTipIcon.Info);
         }
 
         private void ConfigureOnClickNotifyIcon()
         {
-            notifyIcon.Click += (sender, eventArgs) =>
+            NotifyIcon.Click += (sender, eventArgs) =>
             {
                 if (((System.Windows.Forms.MouseEventArgs)eventArgs).Button == System.Windows.Forms.MouseButtons.Right)
                 {
@@ -44,9 +44,9 @@ namespace HourCalculator
                 }
                 var message = OnNotifyIconClicked();
 
-                notifyIcon.BalloonTipTitle = "Spent time";
-                notifyIcon.BalloonTipText = message;
-                notifyIcon.ShowBalloonTip(500);
+                NotifyIcon.BalloonTipTitle = @"Spent time";
+                NotifyIcon.BalloonTipText = message;
+                NotifyIcon.ShowBalloonTip(500);
 
             };
         }
@@ -64,19 +64,16 @@ namespace HourCalculator
 
             var startMenuItem = CreateMenuItem("Start", () =>
             {
-                if(OnStartClicked != null)
-                {
-                    OnStartClicked();
-                };
+                OnStartClicked?.Invoke();
                 _window.Hide();
             });
             contextMenu.MenuItems.Add(startMenuItem);
 
-            notifyIcon.ContextMenu = contextMenu;
+            NotifyIcon.ContextMenu = contextMenu;
         }
 
 
-        private System.Windows.Forms.MenuItem CreateMenuItem(string menuItemText, Action onClick)
+        private static System.Windows.Forms.MenuItem CreateMenuItem(string menuItemText, Action onClick)
         {
             var menuItem = new System.Windows.Forms.MenuItem(menuItemText);
             menuItem.Click += (sender, eventArgs) => { onClick(); };

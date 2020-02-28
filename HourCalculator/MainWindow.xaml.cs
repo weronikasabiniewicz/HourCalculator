@@ -30,8 +30,8 @@ namespace HourCalculator
 
         protected override void OnStateChanged(EventArgs e)
         {
-            if (WindowState == System.Windows.WindowState.Minimized)
-                this.Hide();
+            if (WindowState == WindowState.Minimized)
+                Hide();
 
             base.OnStateChanged(e);
         }
