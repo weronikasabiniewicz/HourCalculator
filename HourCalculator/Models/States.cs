@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HourCalculator
+﻿namespace HourCalculator.Models
 {
     public enum States
     {
-        NotStarted,
         Started,
-        Paused,
-        Stopped
+        Paused
     }
 }

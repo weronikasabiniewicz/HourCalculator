@@ -19,11 +19,6 @@ namespace HourCalculator
             return model;
         }
 
-        public void Stop (DayScheduleModel model)
-        {
-            model.StopTime = DateTime.Now.CutSecond();
-        }
-
         public void UpdatePredictStopTime(DayScheduleModel model)
         {
             model.PredictStopTime = model.StartTime.Add(_eightHours) + SumPausesTime(model.Pauses);

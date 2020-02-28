@@ -17,7 +17,7 @@
             <ColumnDefinition Width="28"/>
             <ColumnDefinition Width="107*"/>
         </Grid.ColumnDefinitions>
-        <Button x:Name="_startButton"  Command="{Binding Path=StartCommand}" Visibility="{Binding Path=IsStartButtonVisible, UpdateSourceTrigger=PropertyChanged,  Converter={StaticResource converter}}" Margin="13,86,20,0" VerticalAlignment="Top" Height="45"  FontSize="18" FontFamily="Microsoft YaHei" IsDefault="True" UseLayoutRounding="False" TabIndex="1" BorderBrush="{x:Null}" BorderThickness="0" Background="{x:Null}">
+        <Button x:Name="_startButton"  Command="{Binding Path=StartCommand}" Margin="13,86,20,0" VerticalAlignment="Top" Height="45"  FontSize="18" FontFamily="Microsoft YaHei" IsDefault="True" UseLayoutRounding="False" TabIndex="1" BorderBrush="{x:Null}" BorderThickness="0" Background="{x:Null}">
             <StackPanel>
                 <Image Source="Resources/play.png" Stretch="Uniform" Height="43" />
             </StackPanel>
@@ -28,26 +28,21 @@
         <Label x:Name="_timeValue" Content="{Binding Path=NowDateTime, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="HH:mm" Margin="1,0,9,61" Grid.Column="2" Height="25" VerticalAlignment="Bottom" />
         <Border BorderBrush="Black" BorderThickness="1" Grid.ColumnSpan="3" Margin="11,24,9,0" Height="56" VerticalAlignment="Top"/>
         <Label Content="Now:" HorizontalAlignment="Left" Height="24" Margin="10,0,0,0" VerticalAlignment="Top" Width="54" FontFamily="Microsoft YaHei"/>
-        <Label x:Name="_startTime" Content="Start time:" Visibility="{Binding Path=IsStartPropertyVisible,Converter={StaticResource converter}, UpdateSourceTrigger=PropertyChanged}" Margin="10,19,0,0" Grid.Row="1" VerticalAlignment="Top" Height="28" Background="#FFD6C8C8" HorizontalAlignment="Left" Width="70" Grid.ColumnSpan="2"/>
-        <Label x:Name="_diffHours" Content="Spend hours :" Visibility="{Binding Path=IsStartPropertyVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource converter}}" HorizontalAlignment="Left" Margin="9,27,0,0" Grid.Row="2" VerticalAlignment="Top" Width="87" Grid.ColumnSpan="2" FontWeight="Bold" Background="{Binding Path=SpendHoursColor}" Height="26"/>
-        <Label x:Name="_spendTimeValue" Content="{Binding Path=SpendTime, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="hh\:mm"  Visibility="{Binding Path=IsStartPropertyVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource converter}}" Grid.Column="2" HorizontalAlignment="Right" Margin="0,27,1,0" Grid.Row="2" VerticalAlignment="Top" Width="105" Height="26"/>
-        <Label x:Name="_endTime" Content="End time:" Visibility="{Binding Path=IsStartPropertyVisible, UpdateSourceTrigger=PropertyChanged,  Converter={StaticResource converter}}" Margin="10,52,0,0" Grid.Row="1" VerticalAlignment="Top" Height="28" Background="#FFD6C8C8" HorizontalAlignment="Left" Width="70" Grid.ColumnSpan="2"/>
-        <Label x:Name="_endTimeValue" Content="{Binding EndTime, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="HH:mm" HorizontalAlignment="Left" Height="28" Margin="0,52,-4,0" Grid.Row="1" VerticalAlignment="Top" Width="111" Visibility="{Binding IsStartPropertyVisible,  Converter={StaticResource converter}, UpdateSourceTrigger=PropertyChanged}" Grid.Column="2"/>
+        <Label x:Name="_startTime" Content="Start time:"  Margin="10,19,0,0" Grid.Row="1" VerticalAlignment="Top" Height="28" Background="#FFD6C8C8" HorizontalAlignment="Left" Width="70" Grid.ColumnSpan="2"/>
+        <Label x:Name="_diffHours" Content="Spend hours :" HorizontalAlignment="Left" Margin="9,27,0,0" Grid.Row="2" VerticalAlignment="Top" Width="87" Grid.ColumnSpan="2" FontWeight="Bold" Background="{Binding Path=SpendHoursColor}" Height="26"/>
+        <Label x:Name="_spendTimeValue" Content="{Binding Path=SpendTime, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="hh\:mm"  Grid.Column="2" HorizontalAlignment="Right" Margin="0,27,1,0" Grid.Row="2" VerticalAlignment="Top" Width="105" Height="26"/>
+        <Label x:Name="_endTime" Content="End time:" Margin="10,52,0,0" Grid.Row="1" VerticalAlignment="Top" Height="28" Background="#FFD6C8C8" HorizontalAlignment="Left" Width="70" Grid.ColumnSpan="2"/>
+        <Label x:Name="_endTimeValue" Content="{Binding EndTime, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="HH:mm" HorizontalAlignment="Left" Height="28" Margin="0,52,-4,0" Grid.Row="1" VerticalAlignment="Top" Width="111" Grid.Column="2"/>
         <Separator Grid.ColumnSpan="3" Height="20" Margin="0,136,-6,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" Width="219" Grid.RowSpan="2"/>
-        <wpfTool:DateTimeUpDown x:Name="_startTimeValue" Format="ShortTime" TextAlignment="Left" Grid.Column="2" Visibility="{Binding Path=IsStartPropertyVisible,  Converter={StaticResource converter}, UpdateSourceTrigger=PropertyChanged}" Height="28" Margin="1,19,0,0" Grid.Row="1"  Value ="{Binding Path=StartTime, UpdateSourceTrigger=PropertyChanged}" AllowTextInput="True" UpdateValueOnEnterKey="True" VerticalAlignment="Top" BorderBrush="White" IsManipulationEnabled="True" TabIndex="2"/>
+        <wpfTool:DateTimeUpDown x:Name="_startTimeValue" Format="ShortTime" TextAlignment="Left" Grid.Column="2" Height="28" Margin="1,19,0,0" Grid.Row="1"  Value ="{Binding Path=StartTime, UpdateSourceTrigger=PropertyChanged}" AllowTextInput="True" UpdateValueOnEnterKey="True" VerticalAlignment="Top" BorderBrush="White" IsManipulationEnabled="True" TabIndex="2"/>
         <Label x:Name="_overtime" Content="Overtime :" Visibility="{Binding Path=IsOverTimeVisible, Converter={StaticResource converter}}" HorizontalAlignment="Left" Margin="10,53,0,0" Grid.Row="2" VerticalAlignment="Top" Width="88" Grid.ColumnSpan="2" FontWeight="Bold" Height="26"/>
         <Label x:Name="_overtimeValue" Visibility="{Binding Path=IsOverTimeVisible, Converter={StaticResource converter}}" Content="{Binding Path=OverTime, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="hh\:mm" Grid.Column="2" Margin="0,53,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="107"/>
         <Separator Grid.ColumnSpan="3" HorizontalAlignment="Left" Height="15" Margin="0,7,-6,0" Grid.Row="2" VerticalAlignment="Top" Width="219"/>
-        <Button x:Name="_pauseButton"  Command="{Binding PauseCommand}" Visibility="{Binding Path=IsPauseVisible, UpdateSourceTrigger=PropertyChanged,  Converter={StaticResource converter}}" Margin="0,86,89.333,0" VerticalAlignment="Top" Height="45"  FontSize="18" FontFamily="Microsoft YaHei" IsDefault="True" UseLayoutRounding="False" TabIndex="1" BorderBrush="{x:Null}" BorderThickness="0" Grid.ColumnSpan="2" Grid.Column="1" Background="{x:Null}">
+        <Button x:Name="_pauseButton"  Command="{Binding PauseCommand}" Margin="0,86,89.333,0" VerticalAlignment="Top" Height="45"  FontSize="18" FontFamily="Microsoft YaHei" IsDefault="True" UseLayoutRounding="False" TabIndex="1" BorderBrush="{x:Null}" BorderThickness="0" Grid.ColumnSpan="2" Grid.Column="1" Background="{x:Null}">
             <StackPanel>
                 <Image Source="Resources/pause.png" Stretch="Uniform" Height="43" />
             </StackPanel>
         </Button>
-        <Button x:Name="_stopButton"  Command="{Binding StopCommand}" Visibility="{Binding Path=IsStartPropertyVisible, UpdateSourceTrigger=PropertyChanged,  Converter={StaticResource converter}}" Margin="42,85,20,0" VerticalAlignment="Top" Height="45"  FontSize="18" FontFamily="Microsoft YaHei" IsDefault="True" UseLayoutRounding="False" TabIndex="1" BorderBrush="{x:Null}" BorderThickness="0" Grid.Column="2" Background="{x:Null}">
-            <StackPanel>
-                <Image Source="Resources/stop.png" Stretch="Uniform" Height="43
-                       "/>
-            </StackPanel>
-        </Button>
+      
     </Grid>
 </Window>

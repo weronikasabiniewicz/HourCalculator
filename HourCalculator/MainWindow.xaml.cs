@@ -25,7 +25,8 @@ namespace HourCalculator
             var notifyIconService = new NotifyIconHandler(this);
             var scheduleService = new ScheduleService();
             DataContext = new ViewModel(notifyIconService, scheduleService);
-            
+            WindowState = WindowState.Minimized;
+
         }
 
         protected override void OnStateChanged(EventArgs e)
